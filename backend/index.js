@@ -10,6 +10,14 @@ import db from './server/db.js';  // Import the db connection from server.js
 configDotenv();
 const app = express();
 app.use(express.json());  // This allows express to parse JSON bodies
+app.use(cors());
+
+// Apply CORS middleware, allowing only frontend requests from http://localhost:3000
+app.use(cors({
+    origin: 'http://127.0.0.1:5500',  // Replace with your frontend URL
+    methods: ['GET', 'POST'],         // Allow specific methods (optional)
+    credentials: true                 // If you need to pass cookies or credentials
+}));
 
 //Setting Port
 const PORT = process.env.PORT || 8100;
