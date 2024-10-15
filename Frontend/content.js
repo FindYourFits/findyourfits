@@ -15,7 +15,7 @@ function dynamicClothingSection(ob) {
   let imgTag = document.createElement("img");
   // imgTag.id = 'image1'
   // imgTag.id = ob.photos
-  // imgTag.src = ob.preview;
+  imgTag.src = ob.preview;
 
   let detailsDiv = document.createElement("div");
   detailsDiv.id = "details";
@@ -29,7 +29,7 @@ function dynamicClothingSection(ob) {
   h4.appendChild(h4Text);
 
   let h2 = document.createElement("h2");
-  let h2Text = document.createTextNode("rs  " + ob.price);
+  let h2Text = document.createTextNode("$" + ob.price);
   h2.appendChild(h2Text);
 
   boxDiv.appendChild(boxLink);

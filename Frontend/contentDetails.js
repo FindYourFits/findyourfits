@@ -23,7 +23,7 @@ function dynamicContentDetails(product) {
 
     let imgTag = document.createElement('img');
     imgTag.id = 'imgDetails';
-    // imgTag.src = product.preview;  // Assuming 'preview' is the image URL for the product
+    imgTag.src = product.preview;  // Assuming 'preview' is the image URL for the product
     imageSectionDiv.appendChild(imgTag);
 
     // Create product details section
