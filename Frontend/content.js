@@ -9,7 +9,7 @@ function dynamicClothingSection(ob) {
 
   let boxLink = document.createElement("a");
   // boxLink.href = '#'
-  boxLink.href = "/contentDetails.html?" + ob.product_id;
+  boxLink.href = "./contentDetails.html?id=" + ob.product_id;
   // console.log('link=>' + boxLink);
 
   let imgTag = document.createElement("img");
