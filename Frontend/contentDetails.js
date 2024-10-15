@@ -123,25 +123,31 @@ function dynamicContentDetails(ob)
 
 // BACKEND CALLING
 
-let httpRequest = new XMLHttpRequest()
-{
-    httpRequest.onreadystatechange = function()
-    {
-        if(this.readyState === 4 && this.status == 200)
-        {
-            console.log('connected!!');
-            let contentDetails = JSON.parse(this.responseText)
-            {
-                console.log(contentDetails);
-                dynamicContentDetails(contentDetails)
-            }
-        }
-        else
-        {
-            console.log('not connected!');
-        }
-    }
-}
+let httpRequest = new XMLHttpRequest();
+httpRequest.withCredentials = true;  // Allow credentials (cookies or tokens) to be sent
 
-httpRequest.open('GET', 'https://5d76bf96515d1a0014085cf9.mockapi.io/product/'+id, true)
-httpRequest.send()  
+httpRequest.onreadystatechange = function() {
+  if (this.readyState === 4) {
+    if (this.status == 200) {
+      contentTitle = JSON.parse(this.responseText);
+      if (document.cookie.indexOf(",counter=") >= 0) {
+        var counter = document.cookie.split(",")[1].split("=")[1];
+        document.getElementById("badge").innerHTML = counter;
+      }
+      for (let i = 0; i < contentTitle.length; i++) {
+        if (contentTitle[i].isFootwear) {
+          console.log(contentTitle[i]);
+          containerFootwear.appendChild(dynamicClothingSection(contentTitle[i]));
+        } else {
+          console.log(contentTitle[i]);
+          containerClothing.appendChild(dynamicClothingSection(contentTitle[i]));
+        }
+      }
+    } else {
+      console.log("call failed!");
+    }
+  }
+};
+httpRequest.open("GET", "http://localhost:8000/products", true);
+httpRequest.send();
+
