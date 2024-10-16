@@ -41,20 +41,41 @@ app.get("/products/:id", (req, res) => {
 });
 
 // Add a product to the cart
-app.post("/cart", (req, res) => {
+// Assuming you're using Express.js with a MySQL database
+app.post('/cart', (req, res) => {
     const { product_id, quantity } = req.body;
+    const cart_id = 1; // Change as needed to get the user's cart ID
 
-    if (!product_id || !quantity) {
-        return res.status(404).json({ message: 'All fields must be completed' });
-    }
+    // First check if the item is already in the cart
+    const checkQuery = `SELECT * FROM cart_items WHERE cart_id = ? AND product_id = ?`;
+    db.query(checkQuery, [cart_id, product_id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
 
-    const q = "INSERT INTO cart_items (cart_id, product_id, quantity) VALUES (?, ?, ?)";
-    db.query(q, [1, product_id, quantity], (err, data) => {
-        if (err) return res.status(500).json(err);
-        return res.json({ message: "Item added to cart", data });
+        if (results.length > 0) {
+            // If it exists, update the quantity
+            const newQuantity = results[0].quantity + quantity;
+            const updateQuery = `UPDATE cart_items SET quantity = ? WHERE cart_id = ? AND product_id = ?`;
+            db.query(updateQuery, [newQuantity, cart_id, product_id], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                return res.json({ message: 'Item updated in cart', product_id, quantity: newQuantity });
+            });
+        } else {
+            // If it doesn't exist, insert a new item
+            const insertQuery = `INSERT INTO cart_items (cart_id, product_id, quantity) VALUES (?, ?, ?)`;
+            db.query(insertQuery, [cart_id, product_id, quantity], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ error: err.message });
+                }
+                return res.json({ message: 'Item added to cart', product_id, quantity });
+            });
+        }
     });
-
 });
+
 
 // Update quantity of a product in the cart
 app.put("/cart", (req, res) => {
